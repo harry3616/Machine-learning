@@ -1,0 +1,31 @@
+#Multiple linear regression 多變量線性回歸/
+#ex1data2.txt數據，第一列是房屋面積大小，第二列是臥室數量，第三列是售價並根據已有數據，建立模型，預測房屋的售價/
+path =  '/home/kesci/input/andrew_ml_ex14179/ex1data2.txt'
+data2 = pd.read_csv(path, header=None, names=['Size', 'Bedrooms', 'Price'])
+data2.head()
+#使用特徵歸一化
+#將size縮放成bedrooms的1000倍大小,統一量級可讓梯度下降收斂的更快。
+#歸一化即是將每類特徵減去他的平均值後除以標準差
+data2 = (data2 - data2.mean()) / data2.std()
+data2.head()
+# 加上一列常數項
+data2.insert(0, 'Ones', 1)
+# 初始化X和y
+cols = data2.shape[1]
+X2 = data2.iloc[:,0:cols-1]
+y2 = data2.iloc[:,cols-1:cols]
+# 轉換成matrix格式，初始化theta
+X2 = np.matrix(X2.values)
+y2 = np.matrix(y2.values)
+theta2 = np.matrix(np.array([0,0,0]))
+# 運行梯度下降算法
+g2, cost2 = gradientDescent(X2, y2, theta2, alpha, iters)
+print(g2)
+#正規方程，不用選擇學習率α，直接計算得出，如果特徵數量n較大則運算時間大
+#當特徵數小於10000 時可以使用的，且只適用於線性模型，不適合邏輯回歸模型等其他模型
+def normalEqn(X, y):
+    theta = np.linalg.inv(X.T@X)@X.T@y#X.T@X等价于X.T.dot(X)
+    return theta
+final_theta2=normalEqn(X, y)#这里用的是data1的数据
+final_theta2
+#最後答案會是matrix([[-3.24140214,  1.1272942 ]])
