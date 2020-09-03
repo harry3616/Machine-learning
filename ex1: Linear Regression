@@ -1,0 +1,73 @@
+ex1: Linear Regression\
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+#輸入5*5單位矩陣
+A = np.eye(5)
+print(A)
+#根據城市人口數量，預測小吃店的利潤，其中數據在ex1data1.txt裡，其中第一列是都市人口數量，而第二列是該城市小吃店利潤
+path =  '/home/kesci/input/andrew_ml_ex14179/ex1data1.txt'
+data = pd.read_csv(path, header=None, names=['Population', 'Profit'])
+data.head()
+data.plot(kind='scatter', x='Population', y='Profit', figsize=(12,8))
+plt.show()
+
+#利用梯度下降 這個部分計算J(Ѳ)cost function，X是矩陣
+def computeCost(X, y, theta):
+    inner = np.power(((X * theta.T) - y), 2)
+    return np.sum(inner) / (2 * len(X))
+computeCost(X, y, theta)
+#加入一列x，用於更新theta，然後我們將初始化為0，學習率初始化為0.01，迭代次數為1500次
+data.insert(0, 'Ones', 1)
+# 初始化X和y
+cols = data.shape[1]
+X = data.iloc[:,:-1] #X是data裡的除以最後列
+y = data.iloc[:,cols-1:cols] #y是data最後一列
+X.head()
+y.head()
+#轉換成矩陣
+X = np.matrix(X.values)
+y = np.matrix(y.values)
+theta = np.matrix(np.array([0,0]))
+#檢查維度是否正確
+print(X.shape, theta.shape, y.shape)
+computeCost(X, Y, theta)
+#梯度下降 檢查是否每一步theta都變小最後收斂到一個穩定的值，其結果用來預測小吃店在35000及70000都市規模人口的利潤
+def gradientDescent(X, y, theta, alpha, iters):
+    temp = np.matrix(np.zeros(theta.shape))
+    parameters = int(theta.ravel().shape[1])
+    cost = np.zeros(iters)
+    
+    for i in range(iters):
+        error = ((X * theta.T) - y)
+        
+        for j in range(parameters):
+            term = np.multiply(error, X[:,j])
+            temp[0,j] = theta[0,j] - ((alpha / len(X)) * np.sum(term))
+            
+        theta = temp
+        cost[i] = computeCost(X, y, theta)
+        
+    return (theta, cost)
+#改變學習率
+alpha = 0.01
+iters = 1500
+g, cost = gradientDescent(X, y, theta, alpha, iters)
+print(g)
+# predict benefit on 35000 and 70000 
+predict35000 = [1,3.5]*g.T
+print("predict35000:",predict35000)
+predict70000 = [1,7]*g.T
+print("predict70000:",predict70000)
+x = np.linspace(data.Population.min(), data.Population.max(), 100)
+f = g[0, 0] + (g[0, 1] * x)
+
+fig, ax = plt.subplots(figsize=(12,8))
+ax.plot(x, f, 'r', label='Prediction')
+ax.scatter(data.Population, data.Profit, label='Traning Data')
+ax.legend(loc=2)
+ax.set_xlabel('Population')
+ax.set_ylabel('Profit')
+ax.set_title('Predicted Profit vs. Population Size')
+plt.show()
+
