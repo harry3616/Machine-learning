@@ -1,0 +1,71 @@
+# Logistic regression and Regulation
+# 在訓練的初始階段，構建一個邏輯回歸模型來預測，某位學生是否被大學錄取。假設你是大學招生官，想通過申請的學生兩次測試來評分，決定是否被錄取。
+# 有申請學生的訓練樣本集將其用於訓練邏輯回歸，每一個訓練樣本，有他們兩次測試的評分和最後是錄取的結果。
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+path = '/home/kesci/input/andrew_ml_ex22391/ex2data1.txt'
+data = pd.read_csv(path, header=None, names=['Exam 1', 'Exam 2', 'Admitted'])
+data.head()  #可顯示前五項資料
+
+# 將資料視覺化，分成錄取以及未錄取
+positive = data[data['Admitted'].isin([1])]
+negative = data[data['Admitted'].isin([0])]
+fig, ax = plt.subplots(figsize=(12,8))
+ax.scatter(positive['Exam 1'], positive['Exam 2'], s=50, c='b', marker='o', label='Admitted')
+ax.scatter(negative['Exam 1'], negative['Exam 2'], s=50, c='r', marker='x', label='Not Admitted')
+ax.legend()
+ax.set_xlabel('Exam 1 Score')
+ax.set_ylabel('Exam 2 Score')
+plt.show()
+
+# 邏輯回歸常用函數sigmoid 函數
+def sigmoid(z):
+    return 1 / (1 + np.exp(-z))
+
+#  邏輯回歸常用函數的代價函數(與線性回歸的代價函數略微不同)
+def cost(theta, X, y):
+    theta = np.matrix(theta)
+    X = np.matrix(X)
+    y = np.matrix(y)
+    first = np.multiply(-y, np.log(sigmoid(X * theta.T)))
+    second = np.multiply((1 - y), np.log(1 - sigmoid(X * theta.T)))
+    return np.sum(first - second) / (len(X))
+
+#初始化X，y，θ
+# 加一列常數列
+data.insert(0, 'Ones', 1)
+
+# 初始化X，y，θ
+cols = data.shape[1]
+X = data.iloc[:,0:cols-1]
+y = data.iloc[:,cols-1:cols]
+theta = np.zeros(3)
+
+# 轉換X，y的類型
+X = np.array(X.values)
+y = np.array(y.values)
+
+# 檢查矩陣的維度
+print(X.shape, theta.shape, y.shape)
+
+# 用初始θ計算代價
+cost(theta, X, y)
+
+# 實現梯度計算的函數（並沒有更新θ）
+def gradient(theta, X, y):
+    theta = np.matrix(theta)
+    X = np.matrix(X)
+    y = np.matrix(y)
+    
+    parameters = int(theta.ravel().shape[1])
+    grad = np.zeros(parameters)
+    
+    error = sigmoid(X * theta.T) - y
+    
+    for i in range(parameters):
+        term = np.multiply(error, X[:,i])
+        grad[i] = np.sum(term) / len(X)
+    
+    return grad
