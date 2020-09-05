@@ -13,7 +13,7 @@ data
 #find the structure of data
 data['X'].shape, data['y'].shape
 
-# visualization as 100 data
+# visualization as 200 data
 sample_idx = np.random.choice(np.arange(data['X'].shape[0]), 200)
 sample_images = data['X'][sample_idx, :]
 sample_images
