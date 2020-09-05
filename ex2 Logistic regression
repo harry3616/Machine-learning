@@ -1,4 +1,4 @@
-# Logistic regression and Regulation
+# Logistic regression and Regularization
 # 在訓練的初始階段，構建一個邏輯回歸模型來預測，某位學生是否被大學錄取。假設你是大學招生官，想通過申請的學生兩次測試來評分，決定是否被錄取。
 # 有申請學生的訓練樣本集將其用於訓練邏輯回歸，每一個訓練樣本，有他們兩次測試的評分和最後是錄取的結果。
 
