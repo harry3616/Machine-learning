@@ -9,12 +9,15 @@ from scipy.io import loadmat
 from sklearn.metrics import classification_report
 data = loadmat('/home/kesci/input/andrew_ml_ex33507/ex3data1.mat')
 data
+
 #find the structure of data
 data['X'].shape, data['y'].shape
+
 # visualization as 100 data
 sample_idx = np.random.choice(np.arange(data['X'].shape[0]), 200)
 sample_images = data['X'][sample_idx, :]
 sample_images
+
 # plot the data
 fig, ax_array = plt.subplots(nrows=10, ncols=10, sharey=True, sharex=True, figsize=(12, 12))
 for r in range(20):
@@ -22,6 +25,7 @@ for r in range(20):
         ax_array[r, c].matshow(np.array(sample_images[10 * r + c].reshape((20, 20))).T,cmap=matplotlib.cm.binary)
         plt.xticks(np.array([]))
         plt.yticks(np.array([])) 
+        
 # vectorization and make mult-clasffication as 10 number
 # logistic regression's cost function is sigmond function and need to notice it is different to linear regression
 def sigmoid(z):
@@ -35,6 +39,7 @@ def cost(theta, X, y, learningRate):
     second = np.multiply((1 - y), np.log(1 - sigmoid(X * theta.T)))
     reg = (learningRate / (2 * len(X))) * np.sum(np.power(theta[:,1:theta.shape[1]], 2))
     return np.sum(first - second) / len(X) + reg
+    
 #  Regulation
 def gradient(theta, X, y, learningRate):
     theta = np.matrix(theta)
@@ -50,6 +55,7 @@ def gradient(theta, X, y, learningRate):
     grad[0, 0] = np.sum(np.multiply(error, X[:,0])) / len(X)
     
     return np.array(grad).ravel()
+    
 #  10 multi-classification to classify 10 number 
 from scipy.optimize import minimize
 
@@ -74,6 +80,7 @@ def one_vs_all(X, y, num_labels, learning_rate):
         all_theta[i-1,:] = fmin.x
     
     return all_theta
+    
 # 確定向量維度
 rows = data['X'].shape[0]
 params = data['X'].shape[1]
