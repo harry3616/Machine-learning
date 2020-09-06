@@ -1,0 +1,113 @@
+#Polynomial regression
+# In the last work, the project is underfitting so need to add some feature to fit
+def poly_features(x, power, as_ndarray=False):
+    data = {'f{}'.format(i): np.power(x, i) for i in range(1, power + 1)}
+    df = pd.DataFrame(data)
+
+    return df.values if as_ndarray else df
+    
+data = sio.loadmat('/home/kesci/input/andrew_ml_ex55139/ex5data1.mat')
+X, y, Xval, yval, Xtest, ytest = map(np.ravel,[data['X'], data['y'], data['Xval'], data['yval'], data['Xtest'], data['ytest']])
+
+poly_features(X, power=3)
+
+# Polynomial regression step 1: use the same cost function and gradient
+# step 2: add up to 8 features step 3: Normalization(歸一化) lanta==0
+def normalize_feature(df):
+    """Applies function along input axis(default 0) of DataFrame."""
+    return df.apply(lambda column: (column - column.mean()) / column.std())
+    
+def prepare_poly_data(*args, power):
+    """
+    args: keep feeding in X, Xval, or Xtest
+        will return in the same order
+    """
+    def prepare(x):
+        # expand feature
+        df = poly_features(x, power=power)
+
+        # normalization
+        ndarr = normalize_feature(df).values
+
+        # add intercept term
+        return np.insert(ndarr, 0, np.ones(ndarr.shape[0]), axis=1)
+
+    return [prepare(x) for x in args]
+
+# plot rhe array
+X_poly, Xval_poly, Xtest_poly= prepare_poly_data(X, Xval, Xtest, power=8)
+X_poly[:3, :]
+
+# plot the learning rate and show the picture
+def plot_learning_curve(X, Xinit, y, Xval, yval, l=0):
+    training_cost, cv_cost = [], []
+    m = X.shape[0]
+
+    for i in range(1, m + 1):
+        # regularization applies here for fitting parameters
+        res = linear_regression(X[:i, :], y[:i], l=l)
+
+        # remember, when you compute the cost here, you are computing
+        # non-regularized cost. Regularization is used to fit parameters only
+        tc = cost(res.x, X[:i, :], y[:i])
+        cv = cost(res.x, Xval, yval)
+
+        training_cost.append(tc)
+        cv_cost.append(cv)
+
+    fig, ax = plt.subplots(2,  1, figsize=(12, 12))
+    ax[0].plot(np.arange(1, m + 1), training_cost, label='training cost')
+    ax[0].plot(np.arange(1, m + 1), cv_cost, label='cv cost')
+    ax[0].legend()
+
+    fitx = np.linspace(-50, 50, 100) 
+    fitxtmp = prepare_poly_data(fitx, power=8)
+    fity = np.dot(prepare_poly_data(fitx, power=8)[0], linear_regression(X, y, l).x.T)
+    
+    ax[1].plot(fitx, fity, c='r', label='fitcurve')
+    ax[1].scatter(Xinit, y, c='b', label='initial_Xy')
+    
+    ax[1].set_xlabel('water_level')
+    ax[1].set_ylabel('flow')
+    
+plot_learning_curve(X_poly, X, y, Xval_poly, yval, l=0)
+plt.show()
+
+# the above algorithm is overfitting so need regulation use lanta=1
+plot_learning_curve(X_poly, X, y, Xval_poly, yval, l=1)
+plt.show()z
+
+# the above algorithm is overfitting so need regulation use lanta=1 and find out it is underfitting
+plot_learning_curve(X_poly, X, y, Xval_poly, yval, l=100)
+plt.show()
+
+# find the best lanata as it take order from the array[0, 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, 3, 10]
+l_candidate = [0, 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, 3, 10]
+training_cost, cv_cost = [], []
+
+for l in l_candidate:
+    res = linear_regression(X_poly, y, l)
+    
+    tc = cost(res.x, X_poly, y)
+    cv = cost(res.x, Xval_poly, yval)
+    
+    training_cost.append(tc)
+    cv_cost.append(cv)
+    
+fig, ax = plt.subplots(figsize=(12,8))
+ax.plot(l_candidate, training_cost, label='training')
+ax.plot(l_candidate, cv_cost, label='cross validation')
+plt.legend()
+
+plt.xlabel('lambda')
+
+plt.ylabel('cost')
+plt.show()
+
+# test the error on test set
+# use test data to compute the cost
+for l in l_candidate:
+    theta = linear_regression(X_poly, y, l).x
+    print('test cost(l={}) = {}'.format(l, cost(theta, Xtest_poly, ytest)))
+# as the result when the lanta is 3 the test set has minimum error 
+
