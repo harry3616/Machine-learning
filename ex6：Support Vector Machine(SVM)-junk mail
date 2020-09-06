@@ -1,0 +1,47 @@
+#junk mail's classification(spam classification)
+# Feature extraction 特征提取(字詞映射到為練習提供的字典中的ID)
+# SVM
+spam_train = loadmat('/home/kesci/input/andrew_ml_ex67101/spamTrain.mat')
+spam_test = loadmat('/home/kesci/input/andrew_ml_ex67101/spamTest.mat')
+
+spam_train
+
+# vcstor維度
+X = spam_train['X']
+Xtest = spam_test['Xtest']
+y = spam_train['y'].ravel()
+ytest = spam_test['ytest'].ravel()
+
+X.shape, y.shape, Xtest.shape, ytest.shape
+
+#Features of SVM
+svc = svm.SVC()
+svc.fit(X, y)
+
+# Training Accuracy and Test accuracy
+print('Training accuracy = {0}%'.format(np.round(svc.score(X, y) * 100, 2)))
+print('Test accuracy = {0}%'.format(np.round(svc.score(Xtest, ytest) * 100, 2)))
+
+# Vasualed result
+kw = np.eye(1899)
+kw[:3,:]
+spam_val = pd.DataFrame({'idx':range(1899)})
+
+spam_val['isspam'] = svc.decision_function(kw)
+
+# possibility
+spam_val['isspam'].describe()
+
+decision = spam_val[spam_val['isspam'] > -0.55]
+decision
+
+#
+path =  '/home/kesci/input/andrew_ml_ex67101/vocab.txt'
+voc = pd.read_csv(path, header=None, names=['idx', 'voc'], sep = '\t')
+voc.head()
+
+# result
+spamvoc = voc.loc[list(decision['idx'])]
+spamvoc
+
+
