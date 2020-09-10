@@ -1,10 +1,12 @@
-ex1: Linear Regression\
+#ex1: Linear Regression
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+
 #輸入5*5單位矩陣
 A = np.eye(5)
 print(A)
+
 #根據城市人口數量，預測小吃店的利潤，其中數據在ex1data1.txt裡，其中第一列是都市人口數量，而第二列是該城市小吃店利潤
 path =  '/home/kesci/input/andrew_ml_ex14179/ex1data1.txt'
 data = pd.read_csv(path, header=None, names=['Population', 'Profit'])
@@ -12,16 +14,18 @@ data.head()
 data.plot(kind='scatter', x='Population', y='Profit', figsize=(12,8))
 plt.show()
 
-#利用梯度下降 這個部分計算J(Ѳ)cost function，X是矩陣
+#利用梯度下降 這個部分計算J(Ѳ)cost function，X是矩陣，theta.T是指係數要轉置 h_θ (x)=θ^T X=θ_0+θ_1 x_1+θ_2 x_2+...+θ_n x_n
 def computeCost(X, y, theta):
     inner = np.power(((X * theta.T) - y), 2)
     return np.sum(inner) / (2 * len(X))
 computeCost(X, y, theta)
+
 #加入一列x，用於更新theta，然後我們將初始化為0，學習率初始化為0.01，迭代次數為1500次
-data.insert(0, 'Ones', 1)
-# 初始化X和y
+data.insert(0, 'Ones', 1)  #其中1是代表axis=1 是直的array其標題是Ones
+# 初始化X和y shape可顯示martix幾行幾列，shape[0]代表幾行，shape[1]代表幾列
+#loc函數：通過行索引 "Index" 中的具體值來取行數據（如取"Index"為"A"的行） iloc函數：通過行號來取行數據（如取第幾行的數據）
 cols = data.shape[1]
-X = data.iloc[:,:-1] #X是data裡的除以最後列
+X = data.iloc[:,:-1] #X是data裡的除了最後列
 y = data.iloc[:,cols-1:cols] #y是data最後一列
 X.head()
 y.head()
@@ -33,9 +37,10 @@ theta = np.matrix(np.array([0,0]))
 print(X.shape, theta.shape, y.shape)
 computeCost(X, Y, theta)
 #梯度下降 檢查是否每一步theta都變小最後收斂到一個穩定的值，其結果用來預測小吃店在35000及70000都市規模人口的利潤
+#theta.ravel() 是轉置
 def gradientDescent(X, y, theta, alpha, iters):
     temp = np.matrix(np.zeros(theta.shape))
-    parameters = int(theta.ravel().shape[1])
+    parameters = int(theta.ravel().shape[1])  
     cost = np.zeros(iters)
     
     for i in range(iters):
