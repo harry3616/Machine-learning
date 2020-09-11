@@ -8,7 +8,7 @@ A = np.eye(5)
 print(A)
 
 #根據城市人口數量，預測小吃店的利潤，其中數據在ex1data1.txt裡，其中第一列是都市人口數量，而第二列是該城市小吃店利潤
-path =  '/home/kesci/input/andrew_ml_ex14179/ex1data1.txt'
+path = 'Coursera-ML-AndrewNg-Notes-master\\code\\ex1-linear regression\\ex1data1.txt'
 data = pd.read_csv(path, header=None, names=['Population', 'Profit'])
 data.head()
 data.plot(kind='scatter', x='Population', y='Profit', figsize=(12,8))
@@ -40,7 +40,7 @@ y = np.matrix(y.values)
 theta = np.matrix(np.array([0,0]))
 #檢查維度是否正確
 print(X.shape, theta.shape, y.shape)
-computeCost(X, Y, theta)
+computeCost(X, y, theta)
 #梯度下降 檢查是否每一步theta都變小最後收斂到一個穩定的值，其結果用來預測小吃店在35000及70000都市規模人口的利潤
 #theta.ravel() 是轉置
 def gradientDescent(X, y, theta, alpha, iters):
