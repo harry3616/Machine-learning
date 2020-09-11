@@ -1,6 +1,10 @@
 #Multiple linear regression 多變量線性回歸/
 #ex1data2.txt數據，第一列是房屋面積大小，第二列是臥室數量，第三列是售價並根據已有數據，建立模型，預測房屋的售價/
-path =  '/home/kesci/input/andrew_ml_ex14179/ex1data2.txt'
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+path='C:\\Users\\user\\Coursera-ML-AndrewNg-Notes-master\\code\\ex1-linear regression\\ex1data2.txt'
 data2 = pd.read_csv(path, header=None, names=['Size', 'Bedrooms', 'Price'])
 data2.head()
 #使用特徵歸一化
