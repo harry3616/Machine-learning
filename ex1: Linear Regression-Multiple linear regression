@@ -12,7 +12,9 @@ data2.head()
 #歸一化即是將每類特徵減去他的平均值後除以標準差
 data2 = (data2 - data2.mean()) / data2.std()
 data2.head()
-# 加上一列常數項
+# 加上一列常數項 刪除如下
+#data2.drop('Ones',axis=1,inplace=True)
+#np.delete(data2, [0], axis=1) 
 data2.insert(0, 'Ones', 1)
 # 初始化X和y
 cols = data2.shape[1]
