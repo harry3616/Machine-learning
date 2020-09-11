@@ -18,6 +18,11 @@ plt.show()
 def computeCost(X, y, theta):
     inner = np.power(((X * theta.T) - y), 2)
     return np.sum(inner) / (2 * len(X))
+    
+cols = data.shape[1]
+X = data.iloc[:,:-1].as_matrix()#X是data裡的除了最後列
+y = data.iloc[:,cols-1:cols]#y是data最後一列
+theta = np.zeros(X.shape[1])
 computeCost(X, y, theta)
 
 #加入一列x，用於更新theta，然後我們將初始化為0，學習率初始化為0.01，迭代次數為1500次
