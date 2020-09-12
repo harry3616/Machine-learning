@@ -76,14 +76,20 @@ learningRate = 1
 
 costReg(theta2, X2, y2, learningRate)
 #正規方程，不用選擇學習率α，直接計算得出，如果特徵數量n較大則運算時間大
+import scipy.optimize as opt
 result2 = opt.fmin_tnc(func=costReg, x0=theta2, fprime=gradientReg, args=(X2, y2, learningRate))
 result2
 # calculate accuracy
+def predict(theta, X):
+    probability = sigmoid(X * theta.T)
+    return [1 if x >= 0.5 else 0 for x in probability]
+
 theta_min = np.matrix(result2[0])
 predictions = predict(theta_min, X2)
 correct = [1 if ((a == 1 and b == 1) or (a == 0 and b == 0)) else 0 for (a, b) in zip(predictions, y2)]
 accuracy = (sum(map(int, correct)) % len(correct))
 print ('accuracy = {0}%'.format(accuracy))
+
 # plot figure
 def hfunc2(theta, x1, x2):
     temp = theta[0][0]
