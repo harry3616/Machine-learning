@@ -26,6 +26,8 @@ def sigmoid(z):
     return 1 / (1 + np.exp(-z))
 
 #  邏輯回歸常用函數的代價函數(與線性回歸的代價函數略微不同)
+#  np.dot()是矩陣內積
+#  實現對應元素相乘，有2種方式，一個是np.multiply()，另外一個是*
 def cost(theta, X, y):
     theta = np.matrix(theta)
     X = np.matrix(X)
@@ -38,13 +40,13 @@ def cost(theta, X, y):
 # 加一列常數列
 data.insert(0, 'Ones', 1)
 
-# 初始化X，y，θ
+# 初始化X，y，θ 此時X y是table有label
 cols = data.shape[1]
 X = data.iloc[:,0:cols-1]
 y = data.iloc[:,cols-1:cols]
 theta = np.zeros(3)
 
-# 轉換X，y的類型
+# 轉換X，y的類型 此時X y是矩陣沒有label
 X = np.array(X.values)
 y = np.array(y.values)
 
