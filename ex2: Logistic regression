@@ -5,11 +5,12 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-path = '/home/kesci/input/andrew_ml_ex22391/ex2data1.txt'
+path='Coursera-ML-AndrewNg-Notes-master\\code\\ex2-logistic regression\\ex2data1.txt'
 data = pd.read_csv(path, header=None, names=['Exam 1', 'Exam 2', 'Admitted'])
 data.head()  #可顯示前五項資料
 
 # 將資料視覺化，分成錄取以及未錄取
+# data['Admitted'].isin 是檢查data中的['Admitted']項，其中isin是看要檢查啥利用此將其標記
 positive = data[data['Admitted'].isin([1])]
 negative = data[data['Admitted'].isin([0])]
 fig, ax = plt.subplots(figsize=(12,8))
