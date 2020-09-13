@@ -42,6 +42,8 @@ data.insert(0, 'Ones', 1)
 
 # 初始化X，y，θ 此時X y是table有label
 # 初始化X和y shape可顯示martix幾行幾列，shape[0]代表幾行，shape[1]代表幾列
+#https://blog.csdn.net/W_weiying/article/details/81411257
+# iloc[0] or loc["a"]是看行，iloc[:,[0]] or loc[:,"a"]是看列，iloc[[0,1],[0,1]] or loc[['a','b'],['A','B']]是看指定行列
 cols = data.shape[1]
 X = data.iloc[:,0:cols-1]
 y = data.iloc[:,cols-1:cols]
