@@ -136,5 +136,7 @@ def predict_all(X, all_theta):
     return h_argmax
 
 #check each accuracy of classification
+#print(classification_report(data['y'], y_pred)) 最後一項是一個Array然後比較其能選出0~9的F1值
+#https://www.cnblogs.com/178mz/p/8558435.html
 y_pred = predict_all(data['X'], all_theta)
 print(classification_report(data['y'], y_pred))
