@@ -7,21 +7,28 @@ import matplotlib.pyplot as plt
 import matplotlib
 from scipy.io import loadmat
 from sklearn.preprocessing import OneHotEncoder
-
-data = loadmat('/home/kesci/input/andrew_ml_ex45345/ex4data1.mat')
+data = loadmat('Coursera-ML-AndrewNg-Notes-master\\code\\ex4-NN back propagation\\ex4data1.mat')
 data
 
 #檢查維度
 X = data['X']
 y = data['y']
 
+print(X)
 X.shape, y.shape
 #
-weight = loadmat("/home/kesci/input/andrew_ml_ex45345/ex4weights.mat")
+weight = loadmat("Coursera-ML-AndrewNg-Notes-master\\code\\ex4-NN back propagation\\ex4weights.mat")
 theta1, theta2 = weight['Theta1'], weight['Theta2']
 theta1.shape, theta2.shape
 
 # visualization as 100 data
+#sharex,sharey：布爾值或者{'none','all','row','col'}，默認：False
+#控制x(sharex)或y(sharey)軸之間的屬性共享：
+#1.True或者' all'：x或y軸屬性將在所有子圖(subplots)中共享.
+#2.False或'none'：每個子圖的x或y軸都是獨立的部分
+#3.'row'：每個子圖在一個x或y軸共享行(row)
+#4.'col':每個子圖在一個x或y軸共享列(column)
+
 sample_idx = np.random.choice(np.arange(data['X'].shape[0]), 100)
 sample_images = data['X'][sample_idx, :]
 fig, ax_array = plt.subplots(nrows=10, ncols=10, sharey=True, sharex=True, figsize=(12, 12))
@@ -67,6 +74,7 @@ def cost(theta1, theta2 , input_size, hidden_size, num_labels, X, y, learning_ra
     
     return J
 # 用Scikitlearn把5000*1 vector變成5000*10的matrix
+# encoder = OneHotEncoder(sparse=False)看裡面有幾種不同類別發現有10個將其變矩陣(5000, 10)
 encoder = OneHotEncoder(sparse=False)
 y_onehot = encoder.fit_transform(y)
 y_onehot.shape
@@ -102,7 +110,7 @@ def costReg(theta1, theta2, input_size, hidden_size, num_labels, X, y, learning_
     J += (float(learning_rate) / (2 * m)) * (np.sum(np.power(theta1[:,1:], 2)) + np.sum(np.power(theta2[:,1:], 2)))
     
     return J
-#
+
 costReg(theta1, theta2, input_size, hidden_size, num_labels, X, y_onehot, learning_rate)
 
 
@@ -112,7 +120,7 @@ costReg(theta1, theta2, input_size, hidden_size, num_labels, X, y_onehot, learni
 def sigmoid_gradient(z):
     return np.multiply(sigmoid(z), (1 - sigmoid(z)))
 
-# np.random.random(size)
+# np.random.random(size)有10285個數字將其控制在0.12
 params = (np.random.random(size=hidden_size * (input_size + 1) + num_labels * (hidden_size + 1)) - 0.5) * 0.24
 
 #
