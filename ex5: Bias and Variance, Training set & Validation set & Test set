@@ -1,6 +1,7 @@
 #Bias and Variance, Training set & Validation set & Test set偏差和方差、訓練集&驗證集&測試集
 # Rugulation on linear regression
 # data visualization
+# 對一個水庫的洩洪水量以及水庫水位進行正則化的線性歸回。然後將會探討方差-偏差的問題
 import numpy as np
 import scipy.io as sio
 import scipy.optimize as opt
@@ -9,9 +10,15 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # vector shape
-data = sio.loadmat('/home/kesci/input/andrew_ml_ex55139/ex5data1.mat')
+# loadmat use to read matlab
+data = sio.loadmat('Coursera-ML-AndrewNg-Notes-master\\code\\ex5-bias vs variance\\ex5data1.mat')
+data
+
+#each feature's vector
 X, y, Xval, yval, Xtest, ytest = map(np.ravel,[data['X'], data['y'], data['Xval'], data['yval'], data['Xtest'], data['ytest']])
 X.shape, y.shape, Xval.shape, yval.shape, Xtest.shape, ytest.shape
+
+
 
 # show tje figure
 
@@ -38,6 +45,7 @@ def cost(theta, X, y):
     # 1*m @ m*1 = 1*1 in matrix multiplication
     # but you know numpy didn't do transpose in 1d array, so here is just a
     # vector inner product to itselves
+    #  inner.T 都要轉置因為Xj(i)是X(i)微分後
     square_sum = inner.T @ inner
     cost = square_sum / (2 * m)
 
@@ -56,6 +64,7 @@ theta = np.ones(X.shape[1])
 costReg(theta, X, y, 1)
 
 # gradiented rugulation the cost function of linear regression
+#  .T 都要轉置因為Xj(i)是X(i)微分後
 def gradient(theta, X, y):
     m = X.shape[0]
 
@@ -76,6 +85,7 @@ def gradientReg(theta, X, y, reg):
 gradientReg(theta, X, y, 1)
 
 # try to fit the best solution lanta=0
+#用工具庫求参數最優解
 theta = np.ones(X.shape[1])
 final_theta = opt.minimize(fun=costReg, x0=theta, args=(X, y, 0), method='TNC', jac=gradientReg, options={'disp': True}).x
 final_theta
