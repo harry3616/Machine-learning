@@ -225,6 +225,7 @@ def backpropReg(params, input_size, hidden_size, num_labels, X, y, learning_rate
     delta2[:,1:] = delta2[:,1:] + (theta2[:,1:] * learning_rate) / m
     
     # unravel the gradient matrices into a single array
+    # numpy.flatten() 與 np.ravel.() 相似
     grad = np.concatenate((np.ravel(delta1), np.ravel(delta2)))
     
     return J, grad
